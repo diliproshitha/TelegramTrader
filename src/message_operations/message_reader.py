@@ -51,14 +51,14 @@ def startMessageClient():
 
             # checks target group ids
             # then get dialogs and stores them as entities if already not in entities
-            for target_group_id in target_group_ids:
-                        if target_group_id not in entities:
+            for source_group_id in source_group_ids:
+                        if source_group_id not in entities:
                             dialogs = await client.get_dialogs(limit=None)
                             for dialog in dialogs:
-                                if (dialog.entity.id == target_group_id):
-                                    entities[target_group_id] = dialog
+                                if (dialog.entity.id == source_group_id):
+                                    entities[source_group_id] = dialog
 
-                        await client.send_message(entities.get(target_group_id).entity, event.raw_text)
+                        await client.send_message(entities.get(source_group_id).entity, event.raw_text)
 
         except Exception as e:
             print(e)
