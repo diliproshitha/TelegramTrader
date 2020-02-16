@@ -36,12 +36,15 @@ def startMessageClient():
     global entities
 
     init()
+    print('Connecting to Telegram servers...')
     client = TelegramClient(phone, api_id, api_hash)
+    print('Connected to Telegram servers...')
+    print('Listening to Messages...')
 
     # start async client and bind event listener
     @client.on(events.NewMessage(chats=source_group_ids))
     async def my_event_handler(event):
-        print(event.raw_text)
+        print('Message received : ' + event.raw_text)
         logging.info(str(event))
 
         try:
