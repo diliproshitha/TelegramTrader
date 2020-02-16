@@ -237,12 +237,14 @@ class InteractiveTelegramClient(TelegramClient):
                 # History
                 elif msg == '!h':
                     # First retrieve the messages and some information
-                    messages = await self.get_messages(entity, limit=10)
+                    messages = await self.get_messages(entity, limit=100)
 
                     # Iterate over all (in reverse order so the latest appear
                     # the last in the console) and print them with format:
                     # "[hh:mm] Sender: Message"
+                    f = open("messages.txt", "w+", encoding="utf-8")
                     for msg in reversed(messages):
+                        f.write(msg.raw_text + "\n\n")
                         # Note how we access .sender here. Since we made an
                         # API call using the self client, it will always have
                         # information about the sender. This is different to
@@ -266,6 +268,8 @@ class InteractiveTelegramClient(TelegramClient):
                         # And print it to the user
                         sprint('[{}:{}] (ID={}) {}: {}'.format(
                             msg.date.hour, msg.date.minute, msg.id, name, content))
+
+                    f.close()
 
                 # Send photo
                 elif msg.startswith('!up '):

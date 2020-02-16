@@ -4,6 +4,7 @@ import logging
 from config.config_reader import UserConfig
 from config import constants
 import traceback
+from util.message_util import analyzeMessage
 
 logging.basicConfig(level=logging.INFO, filename='../logs/messages.log')
 
@@ -21,7 +22,7 @@ entities = {}
 
 # Init the message_interceptor
 def init():
-    global api_id, api_hash, phone, username, target_group_ids, source_group_ids
+    global api_id, api_hash, phone, username, target_group_ids, source_group_ids, config
     api_id = constants.APP_APIID
     api_hash = constants.APP_APIHASH
 
@@ -33,7 +34,7 @@ def init():
 
 def startMessageClient():
 
-    global entities
+    global entities, config
 
     init()
     print('Connecting to Telegram servers...')
@@ -45,26 +46,70 @@ def startMessageClient():
     @client.on(events.NewMessage(chats=source_group_ids))
     async def my_event_handler(event):
         print('Message received : ' + event.raw_text)
-        logging.info(str(event))
+        # logging.info(str(event.raw_text))
 
-        try:
+        #################################################
+        #           ALTER AND FOREWARD                  #
+        #################################################
+        if config.getConfigValue(constants.ENV_ENVIRONMENT_FUNCTION) == constants.ENV_FUNCTION_ALTER_AND_FOREWARD :
 
-            # checks target group ids
-            # then get dialogs and stores them as entities if already not in entities
-            for source_group_id in source_group_ids:
-                        if source_group_id not in entities:
+            order_dict = analyzeMessage(event.raw_text)
+
+            if order_dict.get(constants.ORDER_STATUS):
+
+                decorated_message = getDecoratedMessage(order_dict)
+
+                try:
+
+                    # checks target group ids
+                    # then get dialogs and stores them as entities if already not in entities
+                    for target_group_id in target_group_ids:
+                        if target_group_id not in entities:
                             dialogs = await client.get_dialogs(limit=None)
                             for dialog in dialogs:
-                                if (dialog.entity.id == source_group_id):
-                                    entities[source_group_id] = dialog
+                                if (dialog.entity.id == target_group_id):
+                                    entities[target_group_id] = dialog
 
-                        await client.send_message(entities.get(source_group_id).entity, event.raw_text)
+                        await client.send_message(entities.get(target_group_id).entity, decorated_message)
 
-        except Exception as e:
-            print(e)
-            logging.error(str(e) + '\n')
-        traceback.print_exc()
+                except Exception as e:
+                    print(e)
+                    logging.error(str(e) + '\n')
+                traceback.print_exc()
+
+        #################################################
+        #             READ AND FOREWARD                 #
+        #################################################
+        if config.getConfigValue(constants.ENV_ENVIRONMENT_FUNCTION) == constants.ENV_FUNCTION_READ_AND_FOREWARD:
+            try:
+
+                # checks target group ids
+                # then get dialogs and stores them as entities if already not in entities
+                for target_group_id in target_group_ids:
+                            if target_group_id not in entities:
+                                dialogs = await client.get_dialogs(limit=None)
+                                for dialog in dialogs:
+                                    if (dialog.entity.id == target_group_id):
+                                        entities[target_group_id] = dialog
+
+                            await client.send_message(entities.get(target_group_id).entity, event.raw_text)
+
+            except Exception as e:
+                print(e)
+                logging.error(str(e) + '\n')
+            traceback.print_exc()
 
     client.start()
     client.run_until_disconnected()
 
+def getDecoratedMessage( order_dict ):
+
+    message = ''
+    if order_dict.get(constants.ORDER_STATUS):
+        message += order_dict.get(constants.ORDER_TYPE) + ' '
+        message += order_dict.get(constants.ORDER_INSATRUMENT) + ' '
+        message += order_dict.get(constants.ORDER_PRICE) + '\n'
+        message += 'STOP LOSS: ' + order_dict.get(constants.ORDER_STOP_LOSS) + '\n'
+        message += 'TAKE PROFIT: ' + order_dict.get(constants.ORDER_TAKE_PROFIT)
+
+    return message
