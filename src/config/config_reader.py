@@ -3,8 +3,10 @@ import logging
 class UserConfig(object):
     class __UserConfig:
 
-        __keys = {}
-        __readSuccess = False
+        __user_configs = {}
+        __user_config_read_success = False
+        __env_configs = {}
+        __env_config_read_success = False
 
         def __init__(self):
             self.val = None
@@ -14,7 +16,7 @@ class UserConfig(object):
         def initConfig(self):
             separator = "="
 
-            if not self.__readSuccess:
+            if not self.__user_config_read_success:
                 try:
                     with open('../resources/user.properties') as f:
 
@@ -25,16 +27,38 @@ class UserConfig(object):
 
                                 # Assign key value pair to dict
                                 # strip() removes white space from the ends of strings
-                                self.__keys[name.strip()] = value.strip()
-                        self.__readSuccess = True
+                                self.__user_configs[name.strip()] = value.strip()
+                        self.__user_config_read_success = True
                 except Exception as e:
                     logging.error(str(e) + '\n')
                     print(e)
 
-        def getConfigValue(self, configName):
-            if not self.__readSuccess:
+            if not self.__env_config_read_success:
+                try:
+                    with open('../resources/env.properties') as f:
+
+                        for line in f:
+                            if separator in line:
+                                # Find the name and value by splitting the string
+                                name, value = line.split(separator, 1)
+
+                                # Assign key value pair to dict
+                                # strip() removes white space from the ends of strings
+                                self.__env_configs[name.strip()] = value.strip()
+                        self.__env_config_read_success = True
+                except Exception as e:
+                    logging.error(str(e) + '\n')
+                    print(e)
+
+        def getUserConfigValue(self, configName):
+            if not self.__user_config_read_success:
                 self.initConfig()
-            return self.__keys.get(configName)
+            return self.__user_configs.get(configName)
+
+        def getEnvConfigValue(self, configName):
+            if not self.__env_config_read_success:
+                self.initConfig()
+            return self.__env_configs.get(configName)
 
 
     instance = None

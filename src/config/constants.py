@@ -1,16 +1,22 @@
 APP_APIID = 838650
 APP_APIHASH = '03df7cdaf00d8c27b4c0f4f94d4bef24'
 
-USER_PHONENUMBER = 'phoneNumber'
-USER_USERNAME = 'username'
+ENV_USER_PHONENUMBER = 'phoneNumber'
+ENV_USER_USERNAME = 'username'
 
-CHAT_SOURCE_CHAT_IDS = 'sourceChatIds'
-CHAT_DESTINATION_CHAT_IDS = 'destinationChatIds'
+ENV_CHAT_SOURCE_CHAT_IDS = 'sourceChatIds'
+ENV_CHAT_DESTINATION_CHAT_IDS = 'destinationChatIds'
 
 ENV_ENVIRONMENT_FUNCTION = 'environmentFunction'
 
 ENV_FUNCTION_READ_AND_FOREWARD = 'read_and_foreward'
 ENV_FUNCTION_ALTER_AND_FOREWARD = 'alter_and_foreward'
+
+TRD_REMOTE_SERVER_IP = 'remoteServerIP'
+TRD_FORGE_API_KEY = 'forgeApiKey'
+TRD_PAIRS = 'pairs'
+TRD_ALLOW_TRADING = 'allowTrading'
+TRD_PAIR_PRICE_POINT_FACTOR='pricePointFactor_'
 
 ORDER_TYPE = 'TYPE'
 ORDER_INSATRUMENT = 'INSTR'

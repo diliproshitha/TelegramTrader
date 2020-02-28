@@ -6,7 +6,7 @@ if __name__== "__main__":
 
     config = UserConfig()
 
-    if (config.getConfigValue(constants.ENV_ENVIRONMENT_FUNCTION) == constants.ENV_FUNCTION_READ_AND_FOREWARD):
+    if (config.getEnvConfigValue(constants.ENV_ENVIRONMENT_FUNCTION) == constants.ENV_FUNCTION_READ_AND_FOREWARD):
         message_reader.startMessageClient()
-    elif (config.getConfigValue(constants.ENV_ENVIRONMENT_FUNCTION) == constants.ENV_FUNCTION_ALTER_AND_FOREWARD):
+    elif (config.getEnvConfigValue(constants.ENV_ENVIRONMENT_FUNCTION) == constants.ENV_FUNCTION_ALTER_AND_FOREWARD):
         message_reader.startMessageClient()

@@ -406,7 +406,7 @@ class InteractiveTelegramClient(TelegramClient):
 
 if __name__ == '__main__':
     user_config = UserConfig()
-    SESSION = user_config.getConfigValue(constants.USER_USERNAME)
+    SESSION = user_config.getEnvConfigValue(constants.ENV_USER_USERNAME)
     API_ID = constants.APP_APIID
     API_HASH = constants.APP_APIHASH
     client = InteractiveTelegramClient(SESSION, API_ID, API_HASH)

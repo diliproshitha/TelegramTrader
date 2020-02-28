@@ -2,7 +2,7 @@ import re
 import logging
 from config import constants
 
-logging.basicConfig(level=logging.INFO, filename='../logs/messages.log')
+logging.basicConfig(handlers=[logging.FileHandler('../logs/messages.log', 'a', 'utf-8')], level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 
 def analyzeMessage(msg):
