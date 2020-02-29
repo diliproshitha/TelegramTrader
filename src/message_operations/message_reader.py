@@ -98,7 +98,7 @@ def startMessageClient():
                                     if (dialog.entity.id == target_group_id):
                                         entities[target_group_id] = dialog
 
-                            await client.send_message(entities.get(target_group_id).entity, event)
+                            await client.send_message(entities.get(target_group_id).entity, event.raw_text)
 
             except Exception as e:
                 print(e)
