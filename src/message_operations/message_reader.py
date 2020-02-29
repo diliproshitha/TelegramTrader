@@ -59,7 +59,7 @@ def startMessageClient():
         #################################################
         #           ALTER AND FOREWARD                  #
         #################################################
-        if config.getUserConfigValue(constants.ENV_ENVIRONMENT_FUNCTION) == constants.ENV_FUNCTION_ALTER_AND_FOREWARD :
+        if config.getEnvConfigValue(constants.ENV_ENVIRONMENT_FUNCTION) == constants.ENV_FUNCTION_ALTER_AND_FOREWARD :
 
             if order_dict.get(constants.ORDER_STATUS):
 
@@ -86,7 +86,7 @@ def startMessageClient():
         #################################################
         #             READ AND FOREWARD                 #
         #################################################
-        if config.getUserConfigValue(constants.ENV_ENVIRONMENT_FUNCTION) == constants.ENV_FUNCTION_READ_AND_FOREWARD:
+        if config.getEnvConfigValue(constants.ENV_ENVIRONMENT_FUNCTION) == constants.ENV_FUNCTION_READ_AND_FOREWARD:
             try:
 
                 # checks target group ids
