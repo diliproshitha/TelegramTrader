@@ -24,6 +24,8 @@ def analyzeMessage(msg):
 
         for split_msg in splitted_messages:
 
+            split_msg = re.sub(r"\s+", " ", split_msg )
+
             regex = re.compile('buy|sell\s[a-z]{6}', re.IGNORECASE)
             if (regex.match(split_msg)):
                 temp_msg = split_msg.split(' ')
