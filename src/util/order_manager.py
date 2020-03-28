@@ -11,7 +11,6 @@ import ast
 logging.basicConfig(handlers=[logging.FileHandler('../logs/messages.log', 'a', 'utf-8')], level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 def init():
-    global _zmq
     global user_config
 
     global REMOTE_SERVER_IP
@@ -24,11 +23,11 @@ def init():
     FORGE_API_KEY = user_config.getUserConfigValue(constants.TRD_FORGE_API_KEY)
     pairs = user_config.getUserConfigValue(constants.TRD_PAIRS).split(',')
 
-    _zmq = DWX_ZeroMQ_Connector(_host=REMOTE_SERVER_IP)
 
 def sendOrder(orderDict):
 
     try:
+        _zmq = DWX_ZeroMQ_Connector(_host=REMOTE_SERVER_IP)
         _my_trade = _zmq._generate_default_order_dict()
         _my_trade['_SL'] = getPricePoints(ast.literal_eval(orderDict.get(constants.ORDER_PRICE)), ast.literal_eval(orderDict.get(constants.ORDER_STOP_LOSS)), orderDict.get(constants.ORDER_INSATRUMENT))
         _my_trade['_TP'] = getPricePoints(ast.literal_eval(orderDict.get(constants.ORDER_PRICE)), ast.literal_eval(orderDict.get(constants.ORDER_TAKE_PROFIT)), orderDict.get(constants.ORDER_INSATRUMENT))
