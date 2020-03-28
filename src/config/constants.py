@@ -15,6 +15,7 @@ ENV_FUNCTION_ALTER_AND_FOREWARD = 'alter_and_foreward'
 TRD_REMOTE_SERVER_IP = 'remoteServerIP'
 TRD_FORGE_API_KEY = 'forgeApiKey'
 TRD_PAIRS = 'pairs'
+TRD_SYMBOL_PREFIX = 'symbolPrefix'
 TRD_ALLOW_TRADING = 'allowTrading'
 TRD_PAIR_PRICE_POINT_FACTOR='pricePointFactor_'
 
