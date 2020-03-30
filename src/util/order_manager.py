@@ -38,7 +38,7 @@ def sendOrder(orderDict):
             _my_trade['_SL'] = getPricePoints(ast.literal_eval(orderDict.get(constants.ORDER_PRICE)), ast.literal_eval(orderDict.get(constants.ORDER_STOP_LOSS)), orderDict.get(constants.ORDER_INSATRUMENT))
             _my_trade['_TP'] = getPricePoints(ast.literal_eval(orderDict.get(constants.ORDER_PRICE)), ast.literal_eval(orderDict.get(constants.ORDER_TAKE_PROFIT)), orderDict.get(constants.ORDER_INSATRUMENT))
             _my_trade['_price'] = ast.literal_eval(orderDict.get(constants.ORDER_PRICE))
-            _my_trade['_type'] = orderDict.get(constants.ORDER_TYPE)
+            _my_trade['_type'] = 1 if orderDict.get(constants.ORDER_TYPE) == 'SELL' else 0
             _my_trade['_lots'] = ast.literal_eval(lot_sizes[index])
             _my_trade['_symbol'] = orderDict.get(constants.ORDER_INSATRUMENT) + '.' + symbol_prefixes[index]  if len(symbol_prefixes[index]) > 0 else orderDict.get(constants.ORDER_INSATRUMENT)
             _my_trade['_comment'] = '*New Signal* ' + str(datetime.now())
