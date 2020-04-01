@@ -45,6 +45,7 @@ def sendOrder(orderDict):
 
             print(_my_trade)
             _zmq._DWX_MTX_NEW_TRADE_(_my_trade)
+            adjustOrderPrices(_zmq, orderDict)
 
     except Exception as e:
         logging.error(str(e) + '\n')
@@ -55,6 +56,39 @@ def getCurrentPrice(pair):
     # print('Fetching price from: ' + url)
     # print('Response: ' + str(response.json()))
     return float(response.json()[0]['bid'])
+
+def adjustOrderPrices(_zmq, orderDict) :
+    if (_zmq._thread_data_output is not None and _zmq._thread_data_output.get('_ticket') is not None):
+        ticket = _zmq._thread_data_output.get('_ticket')
+
+        stoploss = abs(getPricePoints(ast.literal_eval(orderDict.get(constants.ORDER_STOP_LOSS)), _zmq._thread_data_output.get('_open_price'), orderDict.get(constants.ORDER_INSATRUMENT)))
+        takeprofit = abs(getPricePoints(ast.literal_eval(orderDict.get(constants.ORDER_TAKE_PROFIT)), _zmq._thread_data_output.get('_open_price'), orderDict.get(constants.ORDER_INSATRUMENT)))
+
+        sl_multiplier = 1
+        tp_multiplier = 1
+        # if orderDict.get(constants.ORDER_TYPE) == 'SELL' :
+        #     if ast.literal_eval(orderDict.get(constants.ORDER_STOP_LOSS)) > _zmq._thread_data_output.get('_sl'):
+        #         sl_multiplier = 1
+        #     else :
+        #         sl_multiplier = -1
+        #     if ast.literal_eval(orderDict.get(constants.ORDER_TAKE_PROFIT)) > _zmq._thread_data_output.get('_tp'):
+        #         tp_multiplier = -1
+        #     else :
+        #         tp_multiplier = 1
+        # else :
+        #     if ast.literal_eval(orderDict.get(constants.ORDER_STOP_LOSS)) > _zmq._thread_data_output.get('_sl'):
+        #         sl_multiplier = 1
+        #     else :
+        #         sl_multiplier = -1
+        #     if ast.literal_eval(orderDict.get(constants.ORDER_TAKE_PROFIT)) > _zmq._thread_data_output.get('_tp'):
+        #         tp_multiplier = 1
+        #     else :
+        #         tp_multiplier = -1
+
+        stoploss = stoploss * sl_multiplier
+        takeprofit = takeprofit * tp_multiplier
+
+        _zmq._DWX_MTX_MODIFY_TRADE_BY_TICKET_(ticket, stoploss, takeprofit)
 
 def getPricePoints(order_price, target_price, instrument):
     # num_decimal_places = abs(decimal.Decimal(str(order_price)).as_tuple().exponent)
