@@ -18,6 +18,7 @@ TRD_PAIRS = 'pairs'
 TRD_SYMBOL_PREFIX = 'symbolPrefix'
 TRD_LOT_SIZES = 'lotSizes'
 TRD_ALLOW_TRADING = 'allowTrading'
+TRD_EXCLUDED_PAIRS = 'excludedPairs'
 TRD_PAIR_PRICE_POINT_FACTOR='pricePointFactor_'
 
 ORDER_TYPE = 'TYPE'

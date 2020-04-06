@@ -18,6 +18,7 @@ def init():
     global pairs
     global symbol_prefixes
     global lot_sizes
+    global excluded_pairs
 
     user_config = UserConfig()
 
@@ -25,6 +26,7 @@ def init():
     symbol_prefixes = user_config.getUserConfigValue(constants.TRD_SYMBOL_PREFIX).split(',')
     FORGE_API_KEY = user_config.getUserConfigValue(constants.TRD_FORGE_API_KEY)
     pairs = user_config.getUserConfigValue(constants.TRD_PAIRS).split(',')
+    excluded_pairs = user_config.getUserConfigValue(constants.TRD_EXCLUDED_PAIRS).split(',')
     lot_sizes = user_config.getUserConfigValue(constants.TRD_LOT_SIZES).split(',')
 
 
@@ -33,19 +35,26 @@ def sendOrder(orderDict):
     try:
 
         for (index, ip) in enumerate(REMOTE_SERVER_IPS) :
-            _zmq = DWX_ZeroMQ_Connector(_host=ip)
-            _my_trade = _zmq._generate_default_order_dict()
-            _my_trade['_SL'] = getPricePoints(ast.literal_eval(orderDict.get(constants.ORDER_PRICE)), ast.literal_eval(orderDict.get(constants.ORDER_STOP_LOSS)), orderDict.get(constants.ORDER_INSATRUMENT))
-            _my_trade['_TP'] = getPricePoints(ast.literal_eval(orderDict.get(constants.ORDER_PRICE)), ast.literal_eval(orderDict.get(constants.ORDER_TAKE_PROFIT)), orderDict.get(constants.ORDER_INSATRUMENT))
-            _my_trade['_price'] = ast.literal_eval(orderDict.get(constants.ORDER_PRICE))
-            _my_trade['_type'] = 1 if orderDict.get(constants.ORDER_TYPE) == 'SELL' else 0
-            _my_trade['_lots'] = ast.literal_eval(lot_sizes[index])
-            _my_trade['_symbol'] = orderDict.get(constants.ORDER_INSATRUMENT) + '.' + symbol_prefixes[index]  if len(symbol_prefixes[index]) > 0 else orderDict.get(constants.ORDER_INSATRUMENT)
-            _my_trade['_comment'] = '*New Signal* ' + str(datetime.now())
+            excluded_pairs_for_server = excluded_pairs[index].split('-')
+            if orderDict.get(constants.ORDER_INSATRUMENT) not in excluded_pairs_for_server:
+                _zmq = DWX_ZeroMQ_Connector(_host=ip)
+                _my_trade = _zmq._generate_default_order_dict()
+                _my_trade['_SL'] = getPricePoints(ast.literal_eval(orderDict.get(constants.ORDER_PRICE)),
+                                                  ast.literal_eval(orderDict.get(constants.ORDER_STOP_LOSS)),
+                                                  orderDict.get(constants.ORDER_INSATRUMENT))
+                _my_trade['_TP'] = getPricePoints(ast.literal_eval(orderDict.get(constants.ORDER_PRICE)),
+                                                  ast.literal_eval(orderDict.get(constants.ORDER_TAKE_PROFIT)),
+                                                  orderDict.get(constants.ORDER_INSATRUMENT))
+                _my_trade['_price'] = ast.literal_eval(orderDict.get(constants.ORDER_PRICE))
+                _my_trade['_type'] = 1 if orderDict.get(constants.ORDER_TYPE) == 'SELL' else 0
+                _my_trade['_lots'] = ast.literal_eval(lot_sizes[index])
+                _my_trade['_symbol'] = orderDict.get(constants.ORDER_INSATRUMENT) + '.' + symbol_prefixes[index] if len(
+                    symbol_prefixes[index]) > 0 else orderDict.get(constants.ORDER_INSATRUMENT)
+                _my_trade['_comment'] = '*New Signal* ' + str(datetime.now())
 
-            print(_my_trade)
-            _zmq._DWX_MTX_NEW_TRADE_(_my_trade)
-            adjustOrderPrices(_zmq, orderDict)
+                print(_my_trade)
+                _zmq._DWX_MTX_NEW_TRADE_(_my_trade)
+                adjustOrderPrices(_zmq, orderDict)
 
     except Exception as e:
         logging.error(str(e) + '\n')
