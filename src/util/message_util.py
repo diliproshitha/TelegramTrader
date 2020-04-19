@@ -14,7 +14,7 @@ def analyzeMessage(msg):
 
     try:
         order_dict[constants.ORDER_STATUS] = False
-        regex = re.compile('[^a-z.A-Z\s\n0-9]')
+        regex = re.compile('[^a-z.A-Z@\s\n0-9]')
         # #First parameter is the replacement, second parameter is your input string
         normalized_message = regex.sub('', msg)
 
@@ -26,13 +26,19 @@ def analyzeMessage(msg):
 
             split_msg = re.sub(r"\s+", " ", split_msg )
 
-            regex = re.compile('buy|sell\s[a-z]{6}', re.IGNORECASE)
+            regex = re.compile('[a-z]{6}\s-\sbuy|sell', re.IGNORECASE)
             if (regex.match(split_msg)):
                 temp_msg = split_msg.split(' ')
-                if (len(temp_msg) > 2):
-                    order_dict[constants.ORDER_TYPE] = temp_msg[0].upper()
-                    order_dict[constants.ORDER_INSATRUMENT] = temp_msg[1].upper()
-                    order_dict[constants.ORDER_PRICE] = temp_msg[2].upper()
+                if (len(temp_msg) > 1):
+                    order_dict[constants.ORDER_TYPE] = temp_msg[1].upper()
+                    order_dict[constants.ORDER_INSATRUMENT] = temp_msg[0].upper()
+                    type_flag = True
+
+            regex = re.compile('@')
+            if (regex.match(split_msg)):
+                temp_msg = split_msg.split(" ")
+                if(len(temp_msg) > 1):
+                    order_dict[constants.ORDER_PRICE] = temp_msg[1].upper()
                     type_flag = True
 
             regex = re.compile('sl', re.IGNORECASE)

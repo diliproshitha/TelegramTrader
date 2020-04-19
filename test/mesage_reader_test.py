@@ -5,7 +5,7 @@ from util import order_manager
 from config import constants
 
 
-message = "👨‍💻BUY GBPUSD 1.3390\n🔸SL 1.3450\n🔹TP 1.3300"
+message = "NZDUSD - SELL\n@ 0.60356\nTP - 0.59159\nSL - 0.60752"
 config = UserConfig()
 order_manager.init()
 
