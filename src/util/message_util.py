@@ -26,7 +26,7 @@ def analyzeMessage(msg):
 
             split_msg = re.sub(r"\s+", " ", split_msg )
 
-            regex = re.compile('[a-z]{6}\s-\sbuy|sell', re.IGNORECASE)
+            regex = re.compile('[a-z]{6}\s[buy|sell]', re.IGNORECASE)
             if (regex.match(split_msg)):
                 temp_msg = split_msg.split(' ')
                 if (len(temp_msg) > 1):
